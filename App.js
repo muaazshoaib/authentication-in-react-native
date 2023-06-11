@@ -6,9 +6,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import HomeScreen from './HomeScreen';
-import SigninScreen from './SigninScreen';
-import SignupScreen from './SignupScreen';
+import HomeScreen from './screens/HomeScreen';
+import SigninScreen from './screens/SigninScreen';
+import SignupScreen from './screens/SignupScreen';
 
 const Stack = createStackNavigator();
 
