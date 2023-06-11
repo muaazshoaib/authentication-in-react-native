@@ -3,19 +3,20 @@
 // FA20-BCS-074
 // SigninScreen.js
 
-import { useState } from 'react';
+import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { Feather } from '@expo/vector-icons';
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
 
-const SigninScreen = ({ navigation }) => {
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+const SigninScreen = ({ navigation, routes }) => {
+  const [userName, setUserName] = useState(null);
+  const [password, setPassword] = useState(null);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign In</Text>
@@ -41,31 +42,46 @@ const SigninScreen = ({ navigation }) => {
         />
       </View>
       <TouchableOpacity
-        style={styles.SignInButton}
-        onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.SignInButtonText}>Sign In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.ForgotPasswordButton} onPress={() => {}}>
-        <Text style={styles.ForgotPasswordButtonText}>Forgot Password</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.SignInWithFacebookButton}
-        onPress={() => {}}>
-        <Text style={styles.SignInWithFacebookButtonText}>
-          Sign In With Facebook
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.SignInWithGoogleButton}
-        onPress={() => {}}>
-        <Text style={styles.SignInWithGoogleButtonText}>
-          Sign In With Google
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.CreateOneButton} onPress={() => {}}>
-        <Text style={styles.CreateOneText}>
-          Don't have an account? Create One
-        </Text>
+        style={styles.Button}
+        onPress={async () => {
+          if (userName == null || password == null) {
+            alert("Please fill out all fields.");
+            return;
+          }
+
+          try {
+            var userInformation = await AsyncStorage.getItem("@storage_Key");
+            userInformation = JSON.parse(userInformation);
+            console.log(userInformation);
+            console.log(userInformation["email"]);
+            console.log(userInformation["password"]);
+            console.log(userInformation["userName"]);
+            // if (email != userInformation["email"]) {
+            //   alert("Incorrect Email");
+            //   console.log('EMAIL IS CORRECT');
+            //   return;
+            // }
+            // if (password != userInformation["password"]) {
+            //   alert("Incorrect Password");
+            //   return;
+            // }
+
+            // let name = userInformation["userName"];
+            // let email = userInformation["email"];
+            // let password = userInformation["password"];
+
+            navigation.navigate("Profile", {
+              Name: userInformation["userName"],
+              Email: userInformation["email"],
+              Password: userInformation["password"],
+            });
+          } catch (e) {
+            // error reading value
+            // alert("ERROR in SignIn Screen.");
+          }
+        }}
+      >
+        <Text style={styles.ButtonText}>Sign In</Text>
       </TouchableOpacity>
     </View>
   );
@@ -73,18 +89,18 @@ const SigninScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F5F5F5",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '80%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
     height: 48,
     borderRadius: 5,
-    backgroundColor: '#FFF',
-    shadowColor: '#000',
+    backgroundColor: "#FFF",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -97,7 +113,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 24,
     marginBottom: 24,
   },
@@ -106,74 +122,19 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     fontSize: 16,
   },
-  SignInButton: {
-    width: '80%',
+  Button: {
+    width: "80%",
     height: 48,
     borderRadius: 5,
-    backgroundColor: '#007AFF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#007AFF",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 0,
   },
-  ForgotPasswordButton: {
-    width: '80%',
-    height: 48,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  SignInWithFacebookButton: {
-    width: '80%',
-    height: 48,
-    borderRadius: 5,
-    backgroundColor: '#E7E9F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  SignInWithGoogleButton: {
-    width: '80%',
-    height: 48,
-    borderRadius: 5,
-    backgroundColor: '#F3E9EA',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  SignInButtonText: {
-    color: '#FFF',
+  ButtonText: {
+    color: "#FFF",
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  ForgotPasswordButtonText: {
-    color: 'grey',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  SignInWithFacebookButtonText: {
-    color: 'blue',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  SignInWithGoogleButtonText: {
-    color: 'red',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  CreateOneButton: {
-    width: '80%',
-    height: 48,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  CreateOneText: {
-    color: 'grey',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
